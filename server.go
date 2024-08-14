@@ -19,14 +19,13 @@ func NewServer() http.Handler {
 			http.Error(w, "Invalid user ID", http.StatusBadRequest)
 			return
 		}
-
 		feed, err := GetFeed(r.Context(), userID)
-
 		if err != nil {
 			log.Printf("err: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+		w.Header().Add("content-type", "application/atom+xml")
 		fmt.Fprint(w, feed)
 	}))
 	return r
