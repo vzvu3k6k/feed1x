@@ -1,6 +1,8 @@
 module github.com/vzvu3k6k/feed1x
 
-go 1.22.5
+go 1.23
+
+toolchain go1.23.2
 
 require (
 	github.com/PuerkitoBio/goquery v1.9.2
