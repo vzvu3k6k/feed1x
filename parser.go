@@ -29,18 +29,16 @@ func parseLm2(body string) (*User, []*Photo, error) {
 	user.Name = doc.Find(".profile-thumbs-name").First().Text()
 
 	photos := []*Photo{}
-	var parseErr error
-	doc.Find(`[id^="imgcontainersecondary-"]`).EachWithBreak(func(_ int, s *goquery.Selection) bool {
+	for _, s := range doc.Find(`[id^="imgcontainersecondary-"]`).EachIter() {
 		id, ok := s.Attr("id")
 		if !ok {
-			parseErr = errors.New("id is not found")
-			return false
+			return nil, nil, errors.New("id is not found")
 		}
 		imageID := id[22:] // "imgcontainersecondary-123" -> "123"
 
 		src, ok := s.Find(".photos-feed-image-container, .photos-feed-image").First().Attr("src")
 		if !ok {
-			parseErr = errors.New("src is not found")
+			return nil, nil, errors.New("src is not found")
 		}
 
 		photos = append(photos, &Photo{
@@ -48,10 +46,6 @@ func parseLm2(body string) (*User, []*Photo, error) {
 			PageURL:  fmt.Sprintf("https://1x.com/photo/%s", imageID),
 			ImageURL: src,
 		})
-		return true
-	})
-	if parseErr != nil {
-		return nil, nil, parseErr
 	}
 
 	return user, photos, nil
