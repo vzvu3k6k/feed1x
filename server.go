@@ -26,6 +26,7 @@ func NewServer() http.Handler {
 			return
 		}
 		w.Header().Add("content-type", "application/atom+xml")
+		w.Header().Add("cache-control", "max-age=86400")
 		fmt.Fprint(w, feed)
 	}))
 	return r
